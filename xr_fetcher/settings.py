@@ -162,3 +162,8 @@ STATIC_URL = '/static/'
 
 LOGIN_URL='/admin/login/'
 USE_TZ = True
+
+DOF_SCRAPE_URL='https://www.banxico.org.mx/tipcamb/tipCamMIAction.do'
+
+FIXER_BASE_URL='http://data.fixer.io/api/'
+FIXER_API_ACCESS_KEY='17ef5ec24b1eb1799f4408d5b0162514'

@@ -1,6 +1,8 @@
 import logging
 import requests
 
+from django.conf import settings
+
 from bs4 import BeautifulSoup
 
 log = logging.getLogger(__name__)
@@ -25,5 +27,5 @@ def scrapeHTML(html):
     return data
 
 def fetchHTML():
-    page = requests.get('https://www.banxico.org.mx/tipcamb/tipCamMIAction.do')
+    page = requests.get(settings.DOF_SCRAPE_URL)
     return page.content
