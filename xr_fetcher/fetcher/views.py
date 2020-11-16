@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 
-#from . import serializers
 from . import scraper
 
 log = logging.getLogger(__name__)

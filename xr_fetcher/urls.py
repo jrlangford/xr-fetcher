@@ -27,6 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('api/v0/hello/', views.HelloWorld.as_view()),
+    path('api/v0/rates/', views.FetchRates.as_view()),
     path('api/v0/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/v0/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
