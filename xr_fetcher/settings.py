@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'xr_fetcher.fetcher',
+    'oauth2_provider',
+    'rest_framework',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +70,43 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope'}
+}
+
+SPECTACULAR_SETTINGS = {
+  'OAUTH2_FLOWS': ['clientCredentials'],
+  'OAUTH2_AUTHORIZATION_URL': '/o/authorize/',
+  'OAUTH2_TOKEN_URL': '/o/token/',
+  'OAUTH2_REFRESH_URL': '/o/token/',
+  'OAUTH2_SCOPES': OAUTH2_PROVIDER['SCOPES'],
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console':{
+            'level':'INFO',
+            'class':'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 WSGI_APPLICATION = 'xr_fetcher.wsgi.application'
 
@@ -118,3 +159,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_URL='/admin/login/'

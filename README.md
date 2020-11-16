@@ -16,7 +16,8 @@ You can run the project via Docker or directly on your system
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.
+./manage.py migrate
+./manage.py createsuperuser
 ```
-
 
 
