@@ -15,12 +15,6 @@ from . import scraper
 
 log = logging.getLogger(__name__)
 
-class HelloWorld(APIView):
-    permission_classes = [ TokenHasReadWriteScope ]
-    def get(self, request, format=None):
-        log.info("Hello")
-        return Response({"message": "Hello, world!"})
-
 class FetchRates(APIView):
     permission_classes = [ TokenHasReadWriteScope ]
 

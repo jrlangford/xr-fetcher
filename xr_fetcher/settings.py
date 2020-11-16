@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@vdtg_9x1=l(93)d^^yw*pqu&ctn(5h#6dj7o7kn5_)r4!kj45'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 
 
 # Application definition
@@ -104,7 +104,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'INFO',
+        'level': os.environ['LOG_LEVEL'],
     },
 }
 
@@ -116,8 +116,12 @@ WSGI_APPLICATION = 'xr_fetcher.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['PGNAME'],
+        'USER': os.environ['PGUSER'],
+        'PASSWORD': os.environ['PGPASS'],
+        'HOST': os.environ['PGHOST'],
+        'PORT': os.environ['PGPORT'],
     }
 }
 
@@ -166,7 +170,7 @@ USE_TZ = True
 DOF_SCRAPE_URL='https://www.banxico.org.mx/tipcamb/tipCamMIAction.do'
 
 FIXER_BASE_URL='http://data.fixer.io/api/'
-FIXER_API_ACCESS_KEY='17ef5ec24b1eb1799f4408d5b0162514'
+FIXER_API_ACCESS_KEY=os.environ['FIXER_API_ACCESS_KEY']
 
 BANXICO_BASE_URL='https://www.banxico.org.mx/SieAPIRest/service/v1/'
-BANXICO_TOKEN='05e6b9a9f6dff5c2301e17ba41313ab6e8e66771865572713b455c96bed7a0f1'
+BANXICO_TOKEN=os.environ['BANXICO_TOKEN']
