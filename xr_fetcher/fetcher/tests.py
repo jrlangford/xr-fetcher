@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 
 from rest_framework.test import force_authenticate, APIRequestFactory
+from rest_framework.test import APITestCase, APIClient
 from oauth2_provider.models import Application, AccessToken
 
 from . import views, scraper
@@ -126,15 +127,6 @@ class FetcherTest(TestCase):
         self.assertEqual(response.data['rates']['banxico']['value'], 20.4833)
         self.assertEqual(response.data['rates']['banxico']['last_updated'], '2020-11-13T12:00:00-06:00')
 
-    #def test_get_rates_live(self):
-    #    request = self.factory.get('/api/v0/rates/')
-    #    force_authenticate(request, user=self.test_user, token=self.tok)
-    #    response = self.fetchRates(request)
-
-    #    print(response.data)
-
-    #    self.assertIs(response.status_code, 200)
-
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_get_rates_no_api_keys(self, mock_get):
         request = self.factory.get('/api/v0/rates/')
@@ -151,3 +143,50 @@ class FetcherTest(TestCase):
 
         self.assertEqual(response.data['rates']['fixer']['status']['success'], False)
         self.assertEqual(response.data['rates']['banxico']['status']['success'], False)
+
+class ThrottleTest(TestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.fetchRates = views.FetchRates.as_view()
+
+        self.test_user = get_user_model().objects.create_user("test_user", "test@user.com", "123456")
+        self.application = Application(
+            name="Test Application",
+            redirect_uris="http://localhost",
+            user=self.test_user,
+            client_type=Application.CLIENT_PUBLIC,
+            authorization_grant_type=Application.GRANT_CLIENT_CREDENTIALS,
+        )
+        self.application.save()
+
+        from datetime import datetime, timedelta
+        from django.utils import timezone
+
+        self.tok = AccessToken.objects.create(
+            user=self.test_user, token='1234567890',
+            application=self.application, scope='read',
+            expires=timezone.now() + timedelta(days=1)
+        )
+
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_reject(self, mock_get):
+        client = APIClient()
+        client.force_authenticate(user=self.test_user, token=self.tok)
+
+        url = '/api/v0/rates/'
+
+        testing_threshold = 5
+        THRESHOLD_STRING = "{}/min".format(testing_threshold)
+
+        REST_FRAMEWORK_OVERRIDE=settings.REST_FRAMEWORK
+        REST_FRAMEWORK_OVERRIDE['DEFAULT_THROTTLE_RATES']['user'] = THRESHOLD_STRING
+
+        with self.settings(REST_FRAMEWORK=REST_FRAMEWORK_OVERRIDE):
+            for i in range(0, testing_threshold):
+                response = client.get(url)
+                self.assertEqual(response.status_code, 200)
+
+            response = client.get(url)
+            # 429 - too many requests
+            self.assertEqual(response.status_code, 429)
