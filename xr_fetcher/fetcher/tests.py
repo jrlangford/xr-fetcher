@@ -99,6 +99,10 @@ def mocked_requests_get(*args, **kwargs):
             }
         }
         return MockResponse(fixer_mock_response, "", 200)
+    if args[0] == settings.BANXICO_BASE_URL + 'series/SF43718/datos/oportuno?mediaType=xml':
+        xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><series><serie idSerie="SF43718" titulo="Tipo de cambio Pesos por d\xc3\xb3lar E.U.A. Tipo de cambio para solventar obligaciones denominadas en moneda extranjera Fecha de determinaci\xc3\xb3n (FIX)"><Obs><dato>20.4833</dato><fecha>13/11/2020</fecha></Obs></serie></series>'
+        return MockResponse("", xml, 200)
+
     return MockResponse(None, 404)
 
 
@@ -149,6 +153,18 @@ class FetcherTest(TestCase):
         self.assertEqual(response.data['rates']['fixer']['last_updated'], '2020-11-16T10:07:41+00:00')
         self.assertEqual(response.data['rates']['fixer']['value'], 20.5303)
 
+        #self.assertEqual(response.data['rates']['banxico']['last_updated'], '2020-11-13T12:00:00-06:00')
+        self.assertEqual(response.data['rates']['banxico']['value'], 20.4833)
+
+    #def test_get_rates_live(self):
+    #    request = self.factory.get('/api/v0/rates/')
+    #    force_authenticate(request, user=self.test_user, token=self.tok)
+    #    response = self.fetchRates(request)
+
+    #    print(response.data)
+
+    #    self.assertIs(response.status_code, 200)
+
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_get_rates_no_api_keys(self, mock_get):
         request = self.factory.get('/api/v0/rates/')
@@ -156,7 +172,7 @@ class FetcherTest(TestCase):
 
         response = None
 
-        with self.settings(FIXER_API_ACCESS_KEY=''):
+        with self.settings(FIXER_API_ACCESS_KEY='', BANXICO_TOKEN=''):
             response = self.fetchRates(request)
 
         self.assertIs(response.status_code, 200)
@@ -164,3 +180,4 @@ class FetcherTest(TestCase):
         self.assertEqual(response.data['rates']['dof']['value'], 20.5303)
 
         self.assertIn('error', response.data['rates']['fixer'])
+        self.assertIn('error', response.data['rates']['banxico'])

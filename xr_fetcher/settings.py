@@ -167,3 +167,6 @@ DOF_SCRAPE_URL='https://www.banxico.org.mx/tipcamb/tipCamMIAction.do'
 
 FIXER_BASE_URL='http://data.fixer.io/api/'
 FIXER_API_ACCESS_KEY='17ef5ec24b1eb1799f4408d5b0162514'
+
+BANXICO_BASE_URL='https://www.banxico.org.mx/SieAPIRest/service/v1/'
+BANXICO_TOKEN='05e6b9a9f6dff5c2301e17ba41313ab6e8e66771865572713b455c96bed7a0f1'
