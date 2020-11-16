@@ -114,14 +114,17 @@ class FetcherTest(TestCase):
 
         self.assertIs(response.status_code, 200)
 
+        self.assertEqual(response.data['rates']['dof']['status']['success'], True)
         self.assertEqual(response.data['rates']['dof']['last_updated'], '2020-11-15T12:00:00-06:00')
         self.assertEqual(response.data['rates']['dof']['value'], 20.5303)
 
+        self.assertEqual(response.data['rates']['fixer']['status']['success'], True)
         self.assertEqual(response.data['rates']['fixer']['last_updated'], '2020-11-16T10:07:41+00:00')
         self.assertEqual(response.data['rates']['fixer']['value'], 20.5303)
 
-        #self.assertEqual(response.data['rates']['banxico']['last_updated'], '2020-11-13T12:00:00-06:00')
+        self.assertEqual(response.data['rates']['banxico']['status']['success'], True)
         self.assertEqual(response.data['rates']['banxico']['value'], 20.4833)
+        self.assertEqual(response.data['rates']['banxico']['last_updated'], '2020-11-13T12:00:00-06:00')
 
     #def test_get_rates_live(self):
     #    request = self.factory.get('/api/v0/rates/')
@@ -146,5 +149,5 @@ class FetcherTest(TestCase):
 
         self.assertEqual(response.data['rates']['dof']['value'], 20.5303)
 
-        self.assertIn('error', response.data['rates']['fixer'])
-        self.assertIn('error', response.data['rates']['banxico'])
+        self.assertEqual(response.data['rates']['fixer']['status']['success'], False)
+        self.assertEqual(response.data['rates']['banxico']['status']['success'], False)

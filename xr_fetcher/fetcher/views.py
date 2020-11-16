@@ -10,8 +10,9 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
+from drf_spectacular.utils import extend_schema, inline_serializer
 
-from . import scraper
+from . import scraper, models, serializers
 
 log = logging.getLogger(__name__)
 
@@ -29,9 +30,12 @@ class FetchRates(APIView):
             s_data = None
 
         if s_data == None:
-            return {
-                "error": "Could not retrieve data"
-            }
+            dv = models.Rate(
+                last_updated=None,
+                value=None,
+                status=models.Success(False, "Could not retrieve data, inspect logs for more information.")
+            )
+            return dv
 
         # We assume all data from DOF is updated at 12:00, as described in footnote 2 in the exchange rate site
         # https://www.banxico.org.mx/tipcamb/tipCamMIAction.do
@@ -41,11 +45,13 @@ class FetchRates(APIView):
         tz = pytz.timezone('America/Mexico_City')
         tz_date = tz.localize(date)
 
-        o_data = {
-            "last_updated": tz_date.isoformat(),
-            "value": s_data['value']
-        }
-        return o_data
+        dv = models.Rate(
+            tz_date.isoformat(),
+            s_data['value'],
+            status=models.Success()
+        )
+        #sv = serializers.RateSerializer(dv).data
+        return dv
 
     def fetch_fixer_data(self):
         access_key = settings.FIXER_API_ACCESS_KEY
@@ -56,20 +62,25 @@ class FetchRates(APIView):
         data = resp.json()
 
         if data['success'] != True:
-            return {
-                "error": data['error']
-            }
+            dv = models.Rate(
+                last_updated=None,
+                value=None,
+                status=models.Success(False, "Could not retrieve data: {}".format( data['error']))
+            )
+            return dv
 
         date = datetime.datetime.fromtimestamp(data['timestamp'])
 
         tz = pytz.timezone('UTC')
         tz_date = tz.localize(date)
 
-        o_data = {
-            "last_updated": tz_date.isoformat(),
-            "value": data['rates']['USD']
-        }
-        return o_data
+        dv = models.Rate(
+            tz_date.isoformat(),
+            data['rates']['USD'],
+            status=models.Success()
+        )
+        #sv = serializers.RateSerializer(dv).data
+        return dv
 
     def fetch_banxico_data(self):
         token = settings.BANXICO_TOKEN
@@ -83,23 +94,32 @@ class FetchRates(APIView):
         resp = requests.get(full_url, headers={'Bmx-Token':token})
 
         if token == '':
-            return {
-                "error": "No se ha configurado un token de acceso."
-            }
+            dv = models.Rate(
+                last_updated=None,
+                value=None,
+                status=models.Success(False, "Could not retrieve data: 'Token is empty'")
+            )
+            return dv
 
         try:
             root = ElementTree.fromstring(resp.content)
 
             if root.tag == 'error':
-                err = root.find('detalle')
-                return {
-                    "error": err.text
-                }
+                dv = models.Rate(
+                    last_updated=None,
+                    value=None,
+                    status=models.Success(False, "Could not retrieve data: {}".format(resp.text))
+                )
+                return dv
+
         except Exception as e:
             if resp.status_code != 200:
-                return {
-                    "error": resp.text
-                }
+                dv = models.Rate(
+                    last_updated=None,
+                    value=None,
+                    status=models.Success(False, "Could not retrieve data: {}".format(resp.text))
+                )
+                return dv
 
         series = root.find('serie')
         ev = series.find('Obs')
@@ -113,23 +133,32 @@ class FetchRates(APIView):
         tz = pytz.timezone('America/Mexico_City')
         tz_date = tz.localize(date)
 
-        o_data = {
-            "last_updated": tz_date.isoformat(),
-            "value": float(value)
+        dv = models.Rate(
+            last_updated=tz_date.isoformat(),
+            value=float(value),
+            status=models.Success()
+        )
+        return dv
+
+    @extend_schema(
+        request=None,
+        responses={
+            200: serializers.WrappedRatesSerializer
         }
-
-        return o_data
-
-
+    )
     def get(self, request, format=None):
-        resp = {
-            'rates': {
-                'dof': self.fetch_dof_data(),
-                'fixer': self.fetch_fixer_data(),
-                'banxico': self.fetch_banxico_data()
-            }
-        }
+        '''
+        Fetches latest USD to MXN exchange rate information from [Diario Oficial de la Federación](https://www.banxico.org.mx/tipcamb/tipCamMIAction.do), [Fixer](https://fixer.io/), and [Banxico](https://www.banxico.org.mx/SieAPIRest/service/v1/doc/consultaDatosSerieOp)
+        '''
 
-        # Fixer data retrieval
-        # Banxico data retrieval
+        fr = models.FullRates(
+            self.fetch_dof_data(),
+            self.fetch_fixer_data(),
+            self.fetch_banxico_data()
+        )
+
+        wr = models.WrappedRates(fr)
+
+        resp = serializers.WrappedRatesSerializer(wr).data
+
         return Response(resp)
