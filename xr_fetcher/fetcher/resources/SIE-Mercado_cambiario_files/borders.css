@@ -1,0 +1,11 @@
+.tablaBordes .b1 { background: url('../images/border1.png') no-repeat; width:9px; height:12px;}
+.tablaBordes .b2 { background: url('../images/border2.png') repeat-x; }
+.tablaBordes .b3 { background: url('../images/border3.png') no-repeat; width:14px; height:12px;}
+
+.tablaBordes .b4 { background: url('../images/border4.png') repeat-y; width:9px;}
+.tablaBordes .b5 { background: #FFFFFF; }
+.tablaBordes .b6 { background: url('../images/border6.png') repeat-y; width:14px;}
+
+.tablaBordes .b7 { background: url('../images/border7.png') no-repeat; width:7px; height:13px;}
+.tablaBordes .b8 { background: url('../images/border8.png') repeat-x; }
+.tablaBordes .b9 { background: url('../images/border9.png') no-repeat; width:14px; height:13px;}

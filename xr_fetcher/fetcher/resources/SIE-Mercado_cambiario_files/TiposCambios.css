@@ -1,0 +1,163 @@
+a:link{
+	color:#000000;
+}
+a:visited{
+	color:#000000;
+}
+
+.titulo {
+ FONT-SIZE: 12px;
+ color:#01404c;
+ FONT-FAMILY: Arial;
+ TEXT-DECORATION: none;
+  font-weight: bold;
+}
+
+.botonesSIE {
+ font-family: Arial;
+ font-size: 12px;
+ color: #000000;
+ text-decoration: none;
+ font-weight: normal;
+}
+
+.liga_tituloSF{
+ font-family: Arial;
+ font-size: 12px;
+ color: #000000;
+ text-decoration: underline;
+ text-align: center;
+}
+
+.liga_tituloSuperior{
+ font-family: Arial;
+ font-size: 12px;
+ font-weight: bold;
+ color: #ffffff;
+ text-decoration: underline;
+ text-align: center;
+}
+
+
+.titulos_tabla {
+ font-family: Arial;
+ font-size: 12px;
+ font-weight: bold;
+ color: #426085;
+ background-color: #CFDDEE;
+ text-decoration: none;
+}
+
+.titulos_tablaSF {
+ font-family:  Arial;
+ font-size: 12px;
+ font-weight: bold;
+ color: #E3EBED!important;
+ background-color: #2F7279!important;
+}
+
+.titulos_simpletablaSF {
+ font-family:  Arial;
+ font-size: 12px;
+ font-weight: bold;
+ color: #000000;
+}
+
+
+.fechasFormatoSalida {
+ font-family: Arial;
+ font-size: 12px;
+ font-weight: normal;
+ color: #333333;
+ text-decoration: none;
+}
+
+.renglonNon {
+ font-family:  Arial;
+ font-size: 12px;
+ font-weight: normal;
+ color: #007279;
+ text-decoration: none;
+ background-color: #FFFFFF;
+}
+
+.renglonPar {
+ font-family:  Arial;
+ font-size: 12px;
+ font-weight: normal;
+ color: #007279;
+ background-color: #EEF3F3!important;
+ text-decoration: none;
+}
+
+.renglonTituloColumnas {
+ font-family: Arial;
+ font-size: 12px;
+ font-weight: bold;
+  color: #E3EBED!important;
+ background-color: #2F7279!important;
+ text-decoration: none;
+}
+
+.renglonTituloColumnasSF {
+ font-family: Arial;
+ font-size: 12px;
+ font-weight: normal;
+ color: #426085;
+ text-align: center;
+}
+
+.notasNotas
+{
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000;
+ text-decoration: none;
+ font-weight: normal;
+ text-align: justify;
+}
+
+
+.cd_tabla_renglon_seguido {
+ font-family: Arial;
+ font-size: 12px;
+ font-weight: normal;
+ color: #a7a8aa;
+ text-decoration: none;
+}
+
+.liga{
+ font-family: Arial;
+ font-size: 12px;
+ color: #000000;
+ text-decoration: underline;
+ text-align: center;
+}
+
+.notasMicroAyuda {
+ font-family:  Arial;
+ font-size: 10px;
+ color: #000000;
+ text-decoration: none;
+ font-weight: normal;
+}
+
+.renglonNonLiga {
+ font-family:  Arial;
+ font-size: 12px;
+ color: #000000;
+ font-weight: normal;
+ text-decoration: underline;
+ background-color: #FFFFFF;
+}
+
+.renglonParLiga {
+ font-family:  Arial;
+ font-size: 12px;
+ color: #000000;
+ font-weight: normal;
+ text-decoration: underline;
+}
+
+
+

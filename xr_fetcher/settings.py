@@ -161,3 +161,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL='/admin/login/'
+USE_TZ = True

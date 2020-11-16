@@ -1,0 +1,519 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <meta name="robots" content="index, nofollow">
+    <script type="text/javascript">var djConfig = {isDebug:false,parseWidgets:false,searchIds:["CALENDARIOINICIAL","CALENDARIOFINAL"]};</script>
+    <script type="text/javascript" language="JavaScript" src="SIE-Mercado_cambiario_files/dojo.js"></script>
+    <script type="text/javascript">dojo.require("dojo.widget.MyDropdownDatePicker");</script>
+    <script language="JavaScript" src="SIE-Mercado_cambiario_files/tipCamValidar.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet" href="SIE-Mercado_cambiario_files/borders.css">
+    <link type="text/css" rel="stylesheet" href="SIE-Mercado_cambiario_files/TiposCambios.css">
+    <title>SIE - Mercado cambiario</title>
+  <style type="text/css">/*
+La paleta de colores corporativos es la siguiente:
+
+Negro    #000000
+Azul 1   #FB9340 (oscuro)
+Azul 2   #CFDDEE (claro)
+Verde    #37858C
+Dorado 1 #C4B49E (oscuro)
+Dorado 2 #EEE9E2 (claro)
+Gris 1   #BABABA (oscuro)
+Gris 2   #DCDCDC (claro)
+Blanco   #FFFFFF
+ */
+
+.datePickerContainer { background-color:transparent; }
+  .calendarContainer { border:1px solid #FB9340; background-color:white; width:190px}
+    /* .monthWrapper */
+    /* .yearWrapper */
+    /* .calendarBodyContainer */
+
+
+.monthWrapper { }
+  .monthContainer { width:100%; }
+    .controlsContainer {
+      padding: 0.3em 0 0.4em 0;
+    }
+    .monthLabelContainer {
+	text-align:center;
+	font:bold 12px Arial;
+	color:#000000;
+        padding-top:0.3em;
+    }
+    .month { }
+    .control IMG { vertical-align:middle; }
+    .control { cursor:pointer;cursor:hand; }
+    .decrease { }
+    .increase { }
+    .cerrar { float:right; padding: 0.2em 0.2em 0 0; }
+
+.yearWrapper { }
+  .yearContainer { width:100%; }
+    .yearContainer td {  }
+    .yearLabel .selectedYear { }
+    .yearContainer .yearLabel {
+	margin:0;
+	padding:0.45em 0;
+	color:#666666;
+	font:bold 12px Arial;
+	text-align:center;
+    }
+
+
+.calendarBodyContainer { width:100%; background: #DCDCDC; }
+.calendarBodyContainer thead tr td {
+        background: #FB9340;
+	color:#FFFFFF;
+	font:12px Arial;
+	text-align:center;
+	padding:0.25em;
+}
+.calendarBodyContainer tbody tr td {
+	color:#000000;
+	font:12px Arial;
+	text-align:center;
+	padding:0.4em;
+	cursor:pointer;
+	cursor:hand;
+}
+.calendarDays { }
+
+/* clases usadas en dojo.widget.html.MyDatePicker.js */
+.calendarBodyContainer .previousMonth,
+.calendarBodyContainer .nextMonth {
+	background-color:#FFFFFF;
+}
+.calendarBodyContainer tbody .currentMonth { }
+.calendarBodyContainer tbody .currentDate { font-weight:bold; } /* hoy */
+.calendarBodyContainer tbody .selectedItem { background-color:#666666; color:#FFFFFF; } /* fecha seleccionada */
+
+.calendarBodyContainer tbody TD:hover { background-color:426085; color:#FFFFFF; }
+
+.calendarBodyContainer .weekend { background-color:#FFFFFF; xcolor:#426085 }
+
+
+/* .hoverMonth { color:#CFDDEE !important; background-color:426085 !important; } */
+
+
+SELECT {
+ font-family: Arial;
+ font-size: 12px;
+ font-weight: normal;
+ color: #333333;
+ background-color: #FFFFFF;
+ text-decoration: none;
+ vertical-align:middle;
+}
+</style></head>
+  <body>
+    <form name="tipCambMIActionForm" method="post" action="/tipcamb/tipCamIHAction.do" target="_blank">
+      
+      
+      <input type="hidden" name="idioma" value="sp">
+      
+      
+      <table width="80%" border="0" align="center"> 
+        <tbody><tr>
+          <td class="titulo" align="center">
+            Tipo de cambio para solventar obligaciones denominadas en dólares de los EE.UU.A.,<br>pagaderas en la República Mexicana
+            <sup>1/</sup>
+          </td>
+        </tr>
+        <tr>
+          <td height="6">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table class="renglonPar" width="100%" cellspacing="0" border="0">
+              <tbody><tr>
+                <td>
+                  <table cellspacing="0" border="0" align="left">
+                    <tbody><tr>
+                      <td class="fechasFormatoSalida"><div align="center">Fecha Inicial</div></td>
+                      <td><div align="center"></div></td>
+                      <td><div align="center"></div></td>
+                      <td class="fechasFormatoSalida"><div align="center">Fecha Final</div></td>
+                      <td><div align="center"></div></td>
+                    </tr>
+                    <tr>
+                      <td id="fechaInicial"><div align="center"><input type="text" name="fechaInicial" size="13" value="dd/mm/aaaa" class="renglonNon"></div></td>
+                      <td width="18">
+                        <div align="center"><div><span style="white-space:nowrap"><input type="text" value="01/01/2006" style="vertical-align: middle; width: 7em; display: none;" dojoattachpoint="inputNode" autocomplete="off"> <img src="SIE-Mercado_cambiario_files/cal.gif" alt="" dojoattachpoint="buttonNode" dojoattachevent="onclick: onIconClick;" style="vertical-align:middle; cursor:pointer; cursor:hand;"></span><br><div dojoattachpoint="containerNode" style="display: none; position: absolute; width: 12em; background-color: transparent; z-index: 10;"><div class="datePickerContainer" dojoattachpoint="datePickerContainerNode">
+  <table class="calendarContainer" cellspacing="0" cellpadding="0" border="0">
+    <thead>
+      <tr>
+        <td class="monthWrapper" valign="top">
+          <table class="monthContainer" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+              <td class="monthLabelContainer"><span dojoattachevent="onClick: onCerrar;" class="control cerrar"><img src="SIE-Mercado_cambiario_files/Cerrar%252014.png"></span><span dojoattachpoint="monthLabelNode" class="month">Enero</span>&nbsp;<span class="selectedYear" dojoattachpoint="currentYearLabelNode">2006</span></td>
+            </tr>
+            <tr>
+              <td class="controlsContainer"><span dojoattachpoint="decreaseMonthNode" dojoattachevent="onClick: onIncrementMonth;" class="control decrease"><img dojoattachpoint="decrementMonthImageNode" src="SIE-Mercado_cambiario_files/Flecha%2520Izq%252018.png"></span><select dojoattachpoint="monthSelectNode" dojoattachevent="onChange: onChangeMonth;"><option value="0" selected="selected">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option><option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option><option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option><option value="9">Octubre</option><option value="10">Noviembre</option><option value="11">Diciembre</option></select><select dojoattachpoint="yearSelectNode" dojoattachevent="onChange: onChangeYear;"><option value="1990">1990</option><option value="1991">1991</option><option value="1992">1992</option><option value="1993">1993</option><option value="1994">1994</option><option value="1995">1995</option><option value="1996">1996</option><option value="1997">1997</option><option value="1998">1998</option><option value="1999">1999</option><option value="2000">2000</option><option value="2001">2001</option><option value="2002">2002</option><option value="2003">2003</option><option value="2004">2004</option><option value="2005">2005</option><option value="2006" selected="selected">2006</option><option value="2007">2007</option><option value="2008">2008</option><option value="2009">2009</option><option value="2010">2010</option><option value="2011">2011</option><option value="2012">2012</option><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option></select><span dojoattachpoint="increaseMonthNode" dojoattachevent="onClick: onIncrementMonth;" class="control increase"><img dojoattachpoint="incrementMonthImageNode" src="SIE-Mercado_cambiario_files/Flecha%2520Der%252018.png"></span>
+              </td>
+            </tr>
+          </tbody></table>
+        </td>
+      </tr>
+      <tr style="display:none">
+        <td class="yearWrapper">
+          <table class="yearContainer" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+              <td class="monthLabelContainer" valign="top">
+                <h3 class="yearLabel">
+
+                </h3>
+              </td>
+            </tr>
+          </tbody></table>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <table class="calendarBodyContainer" cellspacing="0" cellpadding="0" border="0">
+            <thead>
+              <tr class="calendarDays" dojoattachpoint="diasSemanaNode">
+                <td>Do</td><td>Lu</td><td>Ma</td><td>Mi</td><td>Ju</td><td>Vi</td><td>Sa</td>
+              </tr>
+            </thead>
+            <tbody dojoattachpoint="calendarDatesContainerNode" dojoattachevent="onClick: onSetDate;">
+              <tr dojoattachpoint="calendarRow0"><td class="selectedItem currentMonth weekend">1</td><td class="currentMonth">2</td><td class="currentMonth">3</td><td class="currentMonth">4</td><td class="currentMonth">5</td><td class="currentMonth">6</td><td class="currentMonth weekend">7</td></tr>
+              <tr dojoattachpoint="calendarRow1"><td class="currentMonth weekend">8</td><td class="currentMonth">9</td><td class="currentMonth">10</td><td class="currentMonth">11</td><td class="currentMonth">12</td><td class="currentMonth">13</td><td class="currentMonth weekend">14</td></tr>
+              <tr dojoattachpoint="calendarRow2"><td class="currentMonth weekend">15</td><td class="currentMonth">16</td><td class="currentMonth">17</td><td class="currentMonth">18</td><td class="currentMonth">19</td><td class="currentMonth">20</td><td class="currentMonth weekend">21</td></tr>
+              <tr dojoattachpoint="calendarRow3"><td class="currentMonth weekend">22</td><td class="currentMonth">23</td><td class="currentMonth">24</td><td class="currentMonth">25</td><td class="currentMonth">26</td><td class="currentMonth">27</td><td class="currentMonth weekend">28</td></tr>
+              <tr dojoattachpoint="calendarRow4"><td class="currentMonth weekend">29</td><td class="currentMonth">30</td><td class="currentMonth">31</td><td class="nextMonth">1</td><td class="nextMonth">2</td><td class="nextMonth">3</td><td class="nextMonth weekend">4</td></tr>
+              <tr dojoattachpoint="calendarRow5"><td class="nextMonth weekend">5</td><td class="nextMonth">6</td><td class="nextMonth">7</td><td class="nextMonth">8</td><td class="nextMonth">9</td><td class="nextMonth">10</td><td class="nextMonth weekend">11</td></tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div></div></div>
+                        </div></td>
+                      <td width="20"><div align="center">-</div></td>
+                      <td id="fechaFinal"><div align="center"><input type="text" name="fechaFinal" size="13" value="dd/mm/aaaa" class="renglonNon"></div></td>
+                      <td width="18">
+                        <div align="center"><div><span style="white-space:nowrap"><input type="text" style="vertical-align: middle; width: 7em; display: none;" dojoattachpoint="inputNode" autocomplete="off"> <img src="SIE-Mercado_cambiario_files/cal.gif" alt="" dojoattachpoint="buttonNode" dojoattachevent="onclick: onIconClick;" style="vertical-align:middle; cursor:pointer; cursor:hand;"></span><br><div dojoattachpoint="containerNode" style="display: none; position: absolute; width: 12em; background-color: transparent; z-index: 10;"><div class="datePickerContainer" dojoattachpoint="datePickerContainerNode">
+  <table class="calendarContainer" cellspacing="0" cellpadding="0" border="0">
+    <thead>
+      <tr>
+        <td class="monthWrapper" valign="top">
+          <table class="monthContainer" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+              <td class="monthLabelContainer"><span dojoattachevent="onClick: onCerrar;" class="control cerrar"><img src="SIE-Mercado_cambiario_files/Cerrar%252014.png"></span><span dojoattachpoint="monthLabelNode" class="month">Noviembre</span>&nbsp;<span class="selectedYear" dojoattachpoint="currentYearLabelNode">2020</span></td>
+            </tr>
+            <tr>
+              <td class="controlsContainer"><span dojoattachpoint="decreaseMonthNode" dojoattachevent="onClick: onIncrementMonth;" class="control decrease"><img dojoattachpoint="decrementMonthImageNode" src="SIE-Mercado_cambiario_files/Flecha%2520Izq%252018.png"></span><select dojoattachpoint="monthSelectNode" dojoattachevent="onChange: onChangeMonth;"><option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option><option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option><option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option><option value="9">Octubre</option><option value="10" selected="selected">Noviembre</option><option value="11">Diciembre</option></select><select dojoattachpoint="yearSelectNode" dojoattachevent="onChange: onChangeYear;"><option value="1990">1990</option><option value="1991">1991</option><option value="1992">1992</option><option value="1993">1993</option><option value="1994">1994</option><option value="1995">1995</option><option value="1996">1996</option><option value="1997">1997</option><option value="1998">1998</option><option value="1999">1999</option><option value="2000">2000</option><option value="2001">2001</option><option value="2002">2002</option><option value="2003">2003</option><option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option><option value="2009">2009</option><option value="2010">2010</option><option value="2011">2011</option><option value="2012">2012</option><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020" selected="selected">2020</option></select><span dojoattachpoint="increaseMonthNode" dojoattachevent="onClick: onIncrementMonth;" class="control increase"><img dojoattachpoint="incrementMonthImageNode" src="SIE-Mercado_cambiario_files/Flecha%2520Der%252018.png"></span>
+              </td>
+            </tr>
+          </tbody></table>
+        </td>
+      </tr>
+      <tr style="display:none">
+        <td class="yearWrapper">
+          <table class="yearContainer" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+              <td class="monthLabelContainer" valign="top">
+                <h3 class="yearLabel">
+
+                </h3>
+              </td>
+            </tr>
+          </tbody></table>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <table class="calendarBodyContainer" cellspacing="0" cellpadding="0" border="0">
+            <thead>
+              <tr class="calendarDays" dojoattachpoint="diasSemanaNode">
+                <td>Do</td><td>Lu</td><td>Ma</td><td>Mi</td><td>Ju</td><td>Vi</td><td>Sa</td>
+              </tr>
+            </thead>
+            <tbody dojoattachpoint="calendarDatesContainerNode" dojoattachevent="onClick: onSetDate;">
+              <tr dojoattachpoint="calendarRow0"><td class="currentMonth weekend">1</td><td class="currentMonth">2</td><td class="currentMonth">3</td><td class="currentMonth">4</td><td class="currentMonth">5</td><td class="currentMonth">6</td><td class="currentMonth weekend">7</td></tr>
+              <tr dojoattachpoint="calendarRow1"><td class="currentMonth weekend">8</td><td class="currentMonth">9</td><td class="currentMonth">10</td><td class="currentMonth">11</td><td class="currentMonth">12</td><td class="currentMonth">13</td><td class="currentMonth weekend">14</td></tr>
+              <tr dojoattachpoint="calendarRow2"><td class="selectedItem currentMonth currentDate weekend">15</td><td class="currentMonth">16</td><td class="currentMonth">17</td><td class="currentMonth">18</td><td class="currentMonth">19</td><td class="currentMonth">20</td><td class="currentMonth weekend">21</td></tr>
+              <tr dojoattachpoint="calendarRow3"><td class="currentMonth weekend">22</td><td class="currentMonth">23</td><td class="currentMonth">24</td><td class="currentMonth">25</td><td class="currentMonth">26</td><td class="currentMonth">27</td><td class="currentMonth weekend">28</td></tr>
+              <tr dojoattachpoint="calendarRow4"><td class="currentMonth weekend">29</td><td class="currentMonth">30</td><td class="nextMonth">1</td><td class="nextMonth">2</td><td class="nextMonth">3</td><td class="nextMonth">4</td><td class="nextMonth weekend">5</td></tr>
+              <tr dojoattachpoint="calendarRow5"><td class="nextMonth weekend">6</td><td class="nextMonth">7</td><td class="nextMonth">8</td><td class="nextMonth">9</td><td class="nextMonth">10</td><td class="nextMonth">11</td><td class="nextMonth weekend">12</td></tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div></div></div>
+                        </div></td>
+                    </tr>
+                  </tbody></table>
+                </td>
+                <td align="right">
+                  <table cellspacing="0" border="0">
+                    <tbody><tr>
+                      <td class="fechasFormatoSalida">
+                        <div align="center">Formato
+                        </div></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div align="center"><select name="salida" class="renglonNon"><option value="HTML" selected="selected" class="renglonNon">HTML</option>
+                          <option value="XLS" class="renglonNon">XLS</option></select>
+                        </div></td>
+                      <td>
+                        <input type="submit" value="Consultar series" onclick="return  esMenorIgual(document.tipCambMIActionForm.fechaInicial.value,document.tipCambMIActionForm.fechaFinal.value,'sp')
+        &amp;&amp; dentroDeRango(document.tipCambMIActionForm.fechaInicial.value,document.tipCambMIActionForm.fechaFinal.value,'01/01/1990','01/01/2050','sp')" class="botonesSIE">
+                      </td>
+                    </tr>
+                  </tbody></table>
+                </td>
+              </tr>
+            </tbody></table>
+          </td>
+        </tr>
+        <tr>
+          <td height="6"></td>
+        </tr>
+        <tr>
+          <td>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+              <tbody><tr>
+                <td>
+                  <table cellspacing="0" cellpadding="0" border="0" align="center">
+                    <tbody><tr>
+                      <td class="b4"></td>
+                      <td class="b5">
+                        <table width="100%" cellspacing="0" border="0">
+                          <tbody><tr>
+                            <td height="8"></td>
+                          </tr>
+                          <tr class="renglonTituloColumnas" align="center">
+                            <td align="left">
+                              Fecha
+                            </td>
+                            <td width="111" align="right">
+                              FIX
+                              <sup>2/</sup>
+                            </td>
+                            <td width="111" align="right">
+                              Publicación DOF
+                              <sup>3/</sup>
+                            </td>
+                            <td width="111" align="right">
+                              Para pagos
+                              <sup>4/</sup>
+                            </td>
+                            <!--td>
+                              <input type="checkbox" name="seriesSeleccionadas" value="FIX">
+                            </td-->
+                          </tr>
+                          
+                            
+                            <tr class="renglonNon" align="center">
+                              
+                              <td style="padding-top:5px;padding-bottom:5px;" align="left">
+                                15/11/2020
+                              </td>
+                              <td align="right">
+                                N/E
+                              </td>
+                              <td align="right">
+                                N/E
+                              </td>
+                              <td align="right">
+                                20.5303
+                              </td>
+                              <!--td>
+                                &nbsp;
+                              </td-->
+                            </tr>
+                          
+                            
+                            <tr class="renglonPar" align="center">
+                              
+                              <td style="padding-top:5px;padding-bottom:5px;" align="left">
+                                14/11/2020
+                              </td>
+                              <td align="right">
+                                N/E
+                              </td>
+                              <td align="right">
+                                N/E
+                              </td>
+                              <td align="right">
+                                20.5303
+                              </td>
+                              <!--td>
+                                &nbsp;
+                              </td-->
+                            </tr>
+                          
+                            
+                            <tr class="renglonNon" align="center">
+                              
+                              <td style="padding-top:5px;padding-bottom:5px;" align="left">
+                                13/11/2020
+                              </td>
+                              <td align="right">
+                                20.4833
+                              </td>
+                              <td align="right">
+                                20.5303
+                              </td>
+                              <td align="right">
+                                20.5772
+                              </td>
+                              <!--td>
+                                &nbsp;
+                              </td-->
+                            </tr>
+                          
+                            
+                            <tr class="renglonPar" align="center">
+                              
+                              <td style="padding-top:5px;padding-bottom:5px;" align="left">
+                                12/11/2020
+                              </td>
+                              <td align="right">
+                                20.5303
+                              </td>
+                              <td align="right">
+                                20.5772
+                              </td>
+                              <td align="right">
+                                20.4018
+                              </td>
+                              <!--td>
+                                &nbsp;
+                              </td-->
+                            </tr>
+                          
+                            
+                            <tr class="renglonNon" align="center">
+                              
+                              <td style="padding-top:5px;padding-bottom:5px;" align="left">
+                                11/11/2020
+                              </td>
+                              <td align="right">
+                                20.5772
+                              </td>
+                              <td align="right">
+                                20.4018
+                              </td>
+                              <td align="right">
+                                20.3600
+                              </td>
+                              <!--td>
+                                &nbsp;
+                              </td-->
+                            </tr>
+                          
+                            
+                            <tr class="renglonPar" align="center">
+                              
+                              <td style="padding-top:5px;padding-bottom:5px;" align="left">
+                                10/11/2020
+                              </td>
+                              <td align="right">
+                                20.4018
+                              </td>
+                              <td align="right">
+                                20.3600
+                              </td>
+                              <td align="right">
+                                20.6200
+                              </td>
+                              <!--td>
+                                &nbsp;
+                              </td-->
+                            </tr>
+                          
+                            
+                            <tr class="renglonNon" align="center">
+                              
+                              <td style="padding-top:5px;padding-bottom:5px;" align="left">
+                                09/11/2020
+                              </td>
+                              <td align="right">
+                                20.3600
+                              </td>
+                              <td align="right">
+                                20.6200
+                              </td>
+                              <td align="right">
+                                20.7612
+                              </td>
+                              <!--td>
+                                &nbsp;
+                              </td-->
+                            </tr>
+                          
+                        </tbody></table>
+                      </td>
+                      <td class="b6"></td>
+                    </tr>
+                    <tr>
+                      <td class="b7"></td>
+                      <td class="b8"></td>
+                      <td class="b9"></td>
+                    </tr>
+                  </tbody></table>
+                </td>
+              </tr>
+              <!--tr><td height="6"></td></tr-->
+              <tr>
+                <td>
+                  <table width="100%" align="center">
+                    <tbody><tr>
+                      <td class="notasNotas" align="justify">
+                        <b>1/</b> Para mayor información sobre este tipo de cambio consulte: <a class="liga" target="_blank" rel="noopener noreferrer" href="https://www.banxico.org.mx/marco-normativo/normativa-emitida-por-el-banco-de-mexico/circular-3-2012/operaciones-instituciones-cre.html">El Título Tercero, Capítulo V de la Circular 3/2012 del Banco de México</a>.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="notasNotas" align="justify">
+                        <b>2/</b> El tipo de cambio FIX es determinado 
+por el Banco de México los días hábiles bancarios con base en un 
+promedio de las cotizaciones del mercado de cambios al mayoreo para 
+operaciones liquidables el segundo día hábil bancario siguiente. Dichas 
+cotizaciones se obtienen de plataformas de transacción cambiaria y otros
+ medios electrónicos con representatividad en el mercado de cambios. El 
+Banco de México da a conocer el FIX a partir de las 12:00 horas de todos
+ los días hábiles bancarios.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="notasNotas" align="justify">
+                        <b>3/</b> El tipo de cambio FIX se publica por 
+el Banco de México en el Diario Oficial de la Federación el día hábil 
+bancario inmediato siguiente a su determinación.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="notasNotas" align="justify">
+                        <b>4/</b> El tipo de cambio que se debe de 
+utilizar el día de hoy para calcular el equivalente en pesos del monto 
+de las obligaciones de pago denominadas en dólares de los EE.UU.A. para 
+ser cumplidas en la República Mexicana, debe de ser el publicado por el 
+Banco de México en el Diario Oficial de la Federación el día hábil 
+bancario inmediato anterior.
+                      </td>
+                    </tr>
+                  </tbody></table>
+                </td>
+              </tr>
+            </tbody></table>
+          </td>
+        </tr>
+    </tbody></table>
+    </form>
+  
+
+</body></html>
