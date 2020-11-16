@@ -1,6 +1,7 @@
 import json
 import unittest
 from unittest import mock
+import re
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -66,6 +67,38 @@ def mocked_requests_get(*args, **kwargs):
     if args[0] == settings.DOF_SCRAPE_URL:
         html = get_html_file("xr_fetcher/fetcher/resources/SIE-Mercado_cambiario.html", "windows-1252")
         return MockResponse("", html, 200)
+    elif args[0].startswith(settings.FIXER_BASE_URL + 'latest'):
+        # extract access_key
+        m = re.search('[^\?]+\?(.*)?', args[0])
+        params = {}
+        if m:
+            query_string = m.group(1)
+            vals = query_string.split('&')
+            for v in vals:
+                p = v.split('=')
+                params[p[0]]=p[1]
+
+        if params['access_key']=="":
+            fixer_mock_err_response = {
+                "success": False,
+                "error": {
+                    "code": 101,
+                    "type": "missing_access_key",
+                    "info": "You have not supplied an API Access Key. [Required format: access_key=YOUR_ACCESS_KEY]"
+                }
+            }
+            return MockResponse(fixer_mock_err_response, "", 200)
+
+        fixer_mock_response = {
+            "success": True,
+            "timestamp": 1605521261,
+            "base": params['base'],
+            "date": "2020-11-16",
+            "rates": {
+                params['symbols']: 20.5303
+            }
+        }
+        return MockResponse(fixer_mock_response, "", 200)
     return MockResponse(None, 404)
 
 
@@ -109,4 +142,25 @@ class FetcherTest(TestCase):
         response = self.fetchRates(request)
 
         self.assertIs(response.status_code, 200)
-        self.assertNotEqual(response.data['rates']['dof'], None)
+
+        self.assertEqual(response.data['rates']['dof']['last_updated'], '2020-11-15T12:00:00-06:00')
+        self.assertEqual(response.data['rates']['dof']['value'], 20.5303)
+
+        self.assertEqual(response.data['rates']['fixer']['last_updated'], '2020-11-16T10:07:41+00:00')
+        self.assertEqual(response.data['rates']['fixer']['value'], 20.5303)
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_get_rates_no_api_keys(self, mock_get):
+        request = self.factory.get('/api/v0/rates/')
+        force_authenticate(request, user=self.test_user, token=self.tok)
+
+        response = None
+
+        with self.settings(FIXER_API_ACCESS_KEY=''):
+            response = self.fetchRates(request)
+
+        self.assertIs(response.status_code, 200)
+
+        self.assertEqual(response.data['rates']['dof']['value'], 20.5303)
+
+        self.assertIn('error', response.data['rates']['fixer'])
