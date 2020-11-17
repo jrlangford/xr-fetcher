@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib import admin
+from django.views.generic.base import RedirectView
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
@@ -24,6 +25,7 @@ from .fetcher import views
 admin.autodiscover()
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='api/v0/', permanent=False)),
     path('admin/', admin.site.urls),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('api/v0/rates/', views.FetchRates.as_view()),
