@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+from .description import DESCRIPTION
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -103,6 +105,15 @@ OAUTH2_PROVIDER = {
 }
 
 SPECTACULAR_SETTINGS = {
+  'TITLE': 'XR_FETCHER',
+  'DESCRIPTION': DESCRIPTION,
+  'TOS': None,
+  # Optional: MAY contain "name", "url", "email"
+  'CONTACT': {
+      "name": "Jonathan Robin Langford",
+      "email": "jrobinlangford@gmail.com"
+  },
+  'VERSION': '0.1.0',
   'OAUTH2_FLOWS': ['clientCredentials'],
   'OAUTH2_AUTHORIZATION_URL': '/o/authorize/',
   'OAUTH2_TOKEN_URL': '/o/token/',
