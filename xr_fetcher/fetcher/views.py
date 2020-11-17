@@ -12,12 +12,14 @@ from rest_framework.views import APIView
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 from drf_spectacular.utils import extend_schema, inline_serializer
 
+from xr_fetcher import throttling
 from . import scraper, models, serializers
 
 log = logging.getLogger(__name__)
 
 class FetchRates(APIView):
     permission_classes = [ TokenHasReadWriteScope ]
+    throttle_classes = [ throttling.ApplicationRateThrottle ]
 
     def fetch_dof_data(self):
         # DOF data retrieval

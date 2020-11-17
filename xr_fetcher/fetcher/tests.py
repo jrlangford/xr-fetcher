@@ -2,10 +2,13 @@ import json
 import unittest
 from unittest import mock
 import re
+from datetime import datetime, timedelta
 
+from django.utils import timezone
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.core.cache import cache
 
 from rest_framework.test import force_authenticate, APIRequestFactory
 from rest_framework.test import APITestCase, APIClient
@@ -98,6 +101,9 @@ class FetcherTest(TestCase):
             expires=timezone.now() + timedelta(days=1)
         )
 
+    def tearDown(self):
+            # We clear the cache to reset any throttling counters affected by these tests.
+            cache.clear()
 
     def test_scrape_local(self):
         html = get_html_file("xr_fetcher/fetcher/resources/SIE-Mercado_cambiario.html", "windows-1252")
@@ -150,6 +156,7 @@ class ThrottleTest(TestCase):
         self.fetchRates = views.FetchRates.as_view()
 
         self.test_user = get_user_model().objects.create_user("test_user", "test@user.com", "123456")
+        # App and token setup for App 1
         self.application = Application(
             name="Test Application",
             redirect_uris="http://localhost",
@@ -159,34 +166,53 @@ class ThrottleTest(TestCase):
         )
         self.application.save()
 
-        from datetime import datetime, timedelta
-        from django.utils import timezone
+        # App and token setup for App 2
+        self.application2 = Application(
+            name="Test Application",
+            redirect_uris="http://localhost",
+            user=self.test_user,
+            client_type=Application.CLIENT_PUBLIC,
+            authorization_grant_type=Application.GRANT_CLIENT_CREDENTIALS,
+        )
+        self.application2.save()
 
-        self.tok = AccessToken.objects.create(
+        self.tok2 = AccessToken.objects.create(
             user=self.test_user, token='1234567890',
-            application=self.application, scope='read',
+            application=self.application2, scope='read',
             expires=timezone.now() + timedelta(days=1)
         )
 
+    def tearDown(self):
+            # We clear the cache to reset any throttling counters affected by these tests.
+            cache.clear()
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_reject(self, mock_get):
+    def test_reject_1(self, mock_get):
         client = APIClient()
-        client.force_authenticate(user=self.test_user, token=self.tok)
+        apps = [self.application, self.application2]
+        for app in apps:
 
-        url = '/api/v0/rates/'
+            token = AccessToken.objects.create(
+                user=self.test_user, token="1234567890_{}".format(app.id),
+                application=app, scope='read',
+                expires=timezone.now() + timedelta(days=1)
+            )
 
-        testing_threshold = 5
-        THRESHOLD_STRING = "{}/min".format(testing_threshold)
+            client.force_authenticate(user=self.test_user, token=token)
 
-        REST_FRAMEWORK_OVERRIDE=settings.REST_FRAMEWORK
-        REST_FRAMEWORK_OVERRIDE['DEFAULT_THROTTLE_RATES']['user'] = THRESHOLD_STRING
+            url = '/api/v0/rates/'
 
-        with self.settings(REST_FRAMEWORK=REST_FRAMEWORK_OVERRIDE):
-            for i in range(0, testing_threshold):
+            testing_threshold = 5
+            THRESHOLD_STRING = "{}/min".format(testing_threshold)
+
+            REST_FRAMEWORK_OVERRIDE=settings.REST_FRAMEWORK
+            REST_FRAMEWORK_OVERRIDE['DEFAULT_THROTTLE_RATES']['oauth_application'] = THRESHOLD_STRING
+
+            with self.settings(REST_FRAMEWORK=REST_FRAMEWORK_OVERRIDE):
+                for i in range(0, testing_threshold):
+                    response = client.get(url)
+                    self.assertEqual(response.status_code, 200)
+
                 response = client.get(url)
-                self.assertEqual(response.status_code, 200)
-
-            response = client.get(url)
-            # 429 - too many requests
-            self.assertEqual(response.status_code, 429)
+                # 429 - too many requests
+                self.assertEqual(response.status_code, 429)

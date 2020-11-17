@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 
 # Application definition
@@ -81,11 +81,13 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
+        'rest_framework.throttling.UserRateThrottle',
+        'xr_fetcher.throttling.ApplicationRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '50/day',
-        'user': '2000/day'
+        'user': '2000/day',
+        'oauth_application': '2000/day'
     }
 }
 
@@ -119,7 +121,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': os.environ['LOG_LEVEL'],
+        'level': os.getenv('LOG_LEVEL'),
     },
 }
 
@@ -131,12 +133,12 @@ WSGI_APPLICATION = 'xr_fetcher.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['PGNAME'],
-        'USER': os.environ['PGUSER'],
-        'PASSWORD': os.environ['PGPASS'],
-        'HOST': os.environ['PGHOST'],
-        'PORT': os.environ['PGPORT'],
+        'ENGINE': os.getenv('DBENGINE'),
+        'NAME': os.getenv('DBNAME'),
+        'USER': os.getenv('DBUSER'),
+        'PASSWORD': os.getenv('DBPASS'),
+        'HOST': os.getenv('DBHOST'),
+        'PORT': os.getenv('DBPORT'),
     }
 }
 
@@ -185,7 +187,7 @@ USE_TZ = True
 DOF_SCRAPE_URL='https://www.banxico.org.mx/tipcamb/tipCamMIAction.do'
 
 FIXER_BASE_URL='http://data.fixer.io/api/'
-FIXER_API_ACCESS_KEY=os.environ['FIXER_API_ACCESS_KEY']
+FIXER_API_ACCESS_KEY=os.getenv('FIXER_API_ACCESS_KEY')
 
 BANXICO_BASE_URL='https://www.banxico.org.mx/SieAPIRest/service/v1/'
-BANXICO_TOKEN=os.environ['BANXICO_TOKEN']
+BANXICO_TOKEN=os.getenv('BANXICO_TOKEN')
